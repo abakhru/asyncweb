@@ -34,9 +34,9 @@ cd ~/src/aysncweb; pre-commit install
 - Now do the code changes as necessary and when you perform `git commit`, black would auto-format changed files and you can review and git add those files for commit
  
 ### TODO
-- [] add auth support
-- [] expand db-schema with more columns
-- [] perform various SQL queries using jinja or something better SQL templates
-- [] more REST apis definition
-- [] introduce GraphQL as well
-- [] test performance benchmark agains similar CRUD synchornus webapp
+- [ ] add auth support
+- [ ] expand db-schema with more columns
+- [ ] perform various SQL queries using jinja or something better SQL templates
+- [ ] more REST apis definition
+- [ ] introduce GraphQL as well
+- [ ] test performance benchmark against similar CRUD synchronous webapp

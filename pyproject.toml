@@ -2,7 +2,7 @@
 name = "asyncweb"
 version = "0.1.0"
 description = "Simple Async REST webapp"
-authors = ["amit-bakhru <bakhru@me.com>"]
+authors = ["abakhru <bakhru@me.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
