@@ -3,7 +3,9 @@
 set -xe
 
 export WORKSPACE=${WORKSPACE:-$PWD}
-source "${WORKSPACE}"/exports.sh
+source "${WORKSPACE}"/bin/exports.sh
+
+env|grep VIRTUAL_ENV
 
 cd "${WORKSPACE}"
 if [ ! -d "${VIRTUAL_ENV}" ]; then
@@ -12,5 +14,3 @@ fi
 
 "${VIRTUAL_ENV}"/bin/pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}"/bin/pip install -e .
-
-"${WORKSPACE}"/run.sh

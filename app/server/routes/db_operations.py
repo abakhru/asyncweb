@@ -6,7 +6,7 @@ import psycopg2
 from fastapi import APIRouter
 from flask import request
 
-from src.api.logger import LOGGER
+from app.api.logger import LOGGER
 
 router = APIRouter()
 try:

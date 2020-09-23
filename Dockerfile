@@ -33,7 +33,8 @@ RUN set -eux && \
 
 USER ${USER}
 COPY --chown=amit:amit . ${WORKDIR}/
-RUN echo "alias l='ls -larth'" >> /home/${USER}/.bashrc
+RUN echo "alias l='ls -larth'" >> /home/${USER}/.bashrc && \
+    export VIRTUAL_ENV=${HOME}/env && bin/quick_start.sh
 
 EXPOSE 8000
 
