@@ -1,10 +1,11 @@
-from app.api import notes, ping
-from app.api.db import database, engine, metadata
 from fastapi import FastAPI
+
+from src.api import db_operations, notes, ping
+from src.api.db import database, engine, metadata
 
 metadata.create_all(engine)
 
-app = FastAPI(__name__)
+app = FastAPI()
 
 
 @app.on_event("startup")
@@ -18,7 +19,5 @@ async def shutdown():
 
 
 app.include_router(ping.router)
-# app.include_router(db_operations.router)
+app.include_router(db_operations.router)
 app.include_router(notes.router, prefix="/notes", tags=["notes"])
-
-# uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
