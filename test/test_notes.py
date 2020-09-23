@@ -81,11 +81,3 @@ class TestDbOps(TestCase):
         response = self.client.delete(f"{self.base_url}/notes/999/")
         assert response.status_code == 404
         assert response.json()["detail"] == "Note not found"
-
-    def test_read_note_incorrect_id(self):
-        response = self.client.get(f"{self.base_url}/notes/999")
-        assert response.status_code == 404
-        assert response.json()["detail"] == "Note not found"
-
-        response = self.client.get(f"{self.base_url}/notes/0")
-        assert response.status_code == 422

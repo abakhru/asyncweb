@@ -2,28 +2,28 @@ version: '3.7'
 
 services:
 
-#  netdata:
-#    image: netdata/netdata
-#    ports:
-#      - 19999:19999
-#    environment:
-#      - DOCKER_HOST=proxy:2376
-#      - DO_NOT_TRACK=1
-#    cap_add:
-#      - SYS_PTRACE
-#    security_opt:
-#      - apparmor:unconfined
-#    restart: always
-#    volumes:
-#      - /etc/passwd:/host/etc/passwd:ro
-#      - /etc/group:/host/etc/group:ro
-#      - /proc:/host/proc:ro
-#      - /sys:/host/sys:ro
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
-#    depends_on:
-#      - web
-#    networks:
-#      - aysncweb
+  netdata:
+    image: netdata/netdata
+    ports:
+      - 19999:19999
+    environment:
+      - DOCKER_HOST=proxy:2376
+      - DO_NOT_TRACK=1
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    restart: always
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - web
+    networks:
+      - aysncweb
 
   web:
     build: .
