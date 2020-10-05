@@ -26,8 +26,9 @@ services:
       - aysncweb
 
   web:
-    build: .
-    command: "bash -x '/app/run.sh'"
+#    build: .
+    image: asyncweb:latest
+    command: '/app/quick_start.sh'
     ports:
       - 8000:8000
     environment:
@@ -49,8 +50,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - aysncweb
-    expose:
-      - 5432
+    ports:
+      - 5432:5432
 
 volumes:
   db-data:

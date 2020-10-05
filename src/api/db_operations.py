@@ -1,12 +1,19 @@
 import json
 import os
+import sys
 
 import psycopg2
 from fastapi import APIRouter
 from flask import request
 
+from src.api.logger import LOGGER
+
 router = APIRouter()
-conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+try:
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+except (TypeError, ConnectionError) as e:
+    LOGGER.critical(f'Database Connection failed. \n{e}')
+    sys.exit(1)
 cur = conn.cursor()
 table_name = "notes"
 
