@@ -7,13 +7,13 @@ from app.server.models.student import *
 router = APIRouter()
 
 
-@router.get("/", response_description="Students retrieved")11`
+@router.get("/", response_description="Students retrieved")
 async def get_students():
     students = await retrieve_students()
     return ResponseModel(students, "Students data retrieved successfully") \
         if len(students) > 0 \
         else ResponseModel(
-        students, "Empty list returned")
+            students, "Empty list returned")
 
 
 @router.get("/{id}", response_description="Student data retrieved")
