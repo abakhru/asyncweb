@@ -1,6 +1,7 @@
 import logging
 
 import urllib3
+# from rich.logging import RichHandler
 from colorlog import ColoredFormatter
 
 urllib3.disable_warnings(DeprecationWarning)
@@ -19,5 +20,8 @@ stream = logging.StreamHandler()
 stream.setFormatter(ColoredFormatter(LOG_FORMAT))
 level = V_LEVELS.get(logging.INFO, logging.DEBUG)
 logging.basicConfig(handlers=[stream], level=level)
-
-LOGGER.setLevel('INFO')
+# logging.basicConfig(level=level,
+#                     format=LOG_FORMAT,
+#                     datefmt="[%X]",
+#                     handlers=[RichHandler(rich_tracebacks=True)])
+LOGGER.setLevel('DEBUG')

@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.api import db_operations, notes, ping
+from src.api import notes_db_ops, notes, ping, user, users_db_ops
 from src.api.db import database, engine, metadata
 
 metadata.create_all(engine)
@@ -20,9 +20,12 @@ async def shutdown():
 
 
 app.include_router(ping.router)
-app.include_router(db_operations.router)
+app.include_router(notes_db_ops.router)
+app.include_router(users_db_ops.router)
 app.include_router(notes.router, prefix="/notes", tags=["notes"])
+app.include_router(user.router, prefix="/users", tags=["user"])
 
 
 if __name__ == '__main__':
-    uvicorn.run(app=app, host="0.0.0.0", port=8000, log_level='debug', debug=True, use_colors=True)
+    uvicorn.run(app=app, host="0.0.0.0", port=8000, log_level='debug',
+                debug=True, use_colors=True, reload=True)
