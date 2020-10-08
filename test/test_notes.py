@@ -53,7 +53,7 @@ class TestDbOps(TestCase):
     def test_read_all_notes(self):
         response = self.client.get(f"{self.base_url}/")
         assert response.status_code == 200
-        assert len(response.json()) > 1
+        assert len(response.json()) >= 1
 
     def test_update_note(self):
         test_response_payload = {"title": "something",
