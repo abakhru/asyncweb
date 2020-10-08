@@ -4,7 +4,7 @@ from databases import Database
 from sqlalchemy import Column, DateTime, Integer, MetaData, String, Table, create_engine
 from sqlalchemy.sql import func
 
-from src.api.logger import LOGGER
+from src.utils.logger import LOGGER
 
 DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql://amit:amit@db/asyncweb')
 

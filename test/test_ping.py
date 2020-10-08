@@ -1,7 +1,7 @@
 from starlette.testclient import TestClient
 
-from src.api.logger import LOGGER
-from src.main import app
+from src.utils.logger import LOGGER
+from src.server import app
 
 client = TestClient(app)
 

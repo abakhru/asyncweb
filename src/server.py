@@ -1,8 +1,9 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.api import notes_db_ops, notes, ping, user, users_db_ops
-from src.api.db import database, engine, metadata
+from src.api import notes, ping, user
+from src.db import notes_db_ops, users_db_ops
+from src.db.base import database, engine, metadata
 
 metadata.create_all(engine)
 

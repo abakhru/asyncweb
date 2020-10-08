@@ -1,4 +1,4 @@
-from src.api.db import database, users
+from src.db.base import database, users
 from src.api.models import UserSchema
 
 

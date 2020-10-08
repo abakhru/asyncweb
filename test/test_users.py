@@ -1,12 +1,10 @@
 import json
 import uuid
-from random import randint
 from unittest import TestCase
 
 import requests
-from parameterized import parameterized
 
-from src.api.logger import LOGGER
+from src.utils.logger import LOGGER
 
 new_user_id = 0
 

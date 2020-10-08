@@ -5,7 +5,7 @@ from unittest import TestCase
 import requests
 from parameterized import parameterized
 
-from src.api.logger import LOGGER
+from src.utils.logger import LOGGER
 
 new_note_id = 0
 

@@ -6,7 +6,7 @@ import psycopg2
 from fastapi import APIRouter
 from flask import request
 
-from src.api.logger import LOGGER
+from src.utils.logger import LOGGER
 
 router = APIRouter()
 try:
@@ -14,14 +14,21 @@ try:
 except (TypeError, ConnectionError) as e:
     LOGGER.critical(f'Database Connection failed. \n{e}')
     sys.exit(1)
+
 cur = conn.cursor()
-table_name = "notes"
+table_name = "users"
 
 
 @router.route("/create", methods=["POST"])
 async def create():
-    name = request.json["Name"]
-    sql = f"""insert into {table_name} values('{name}')"""
+    json_req = request.json()
+    # TODO: hash password and save encrypted
+    sql = f"""INSERT INTO {table_name} 
+            (email, password_hash, first_name, last_name, consecutive_failures)
+            VALUES 
+            ({json_req.get('email').lower()}, {json_req.get('password')}, 
+             {json_req.get('first_name')}, {json_req.get('last_name')}, 0)"""
+    LOGGER.debug(f'Constructed SQL:\n{sql}')
     cur.execute(sql)
     conn.commit()
     response = {"Message": "Success"}
