@@ -1,8 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.api import notes, ping, user
-from src.db import notes_db_ops, users_db_ops
+from src.api import notes, ping, users
 from src.db.base import database, engine, metadata
 
 metadata.create_all(engine)
@@ -21,10 +20,8 @@ async def shutdown():
 
 
 app.include_router(ping.router)
-app.include_router(notes_db_ops.router)
-app.include_router(users_db_ops.router)
 app.include_router(notes.router, prefix="/notes", tags=["notes"])
-app.include_router(user.router, prefix="/users", tags=["user"])
+app.include_router(users.router, prefix="/users", tags=["user"])
 
 
 if __name__ == '__main__':

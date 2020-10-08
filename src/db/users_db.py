@@ -1,8 +1,12 @@
 from src.db.base import database, users
 from src.api.models import UserSchema
+from src.utils.logger import LOGGER
 
 
 async def post(payload: UserSchema):
+    query = users.select().where(id == users.c.email)
+    out = database.fetch_one(query=query)
+    LOGGER.info(f'Response: {out}')
     query = users.insert().values(email=payload.email,
                                   first_name=payload.first_name,
                                   last_name=payload.last_name,

@@ -7,40 +7,48 @@ import requests
 from src.utils.logger import LOGGER
 
 new_user_id = 0
+RANDOM_STRING = uuid.uuid4()
+REQUEST_PAYLOAD = {"email": f"test.{RANDOM_STRING}@amit.com",
+                   "password": f"password123",
+                   "first_name": 'test',
+                   "last_name": f'{RANDOM_STRING}'}
 
 
 class TestUserOps(TestCase):
 
     def setUp(self) -> None:
         super().setUp()
+        LOGGER.info(f'Running test "{self.id().split(".").pop()}"')
         self.client = requests.Session()
         self.base_url = f'http://0.0.0.0:8000/users'
-        id_list = self.id().split('.')
-        LOGGER.info(f'Running test "{id_list.pop()}"')
-        LOGGER.info(f'==== New Id of note: {new_user_id}')
+        self.random_id = RANDOM_STRING
+        LOGGER.info(f'==== New Id of user: {new_user_id}')
 
-    def test_create_user(self):
-        random_id = uuid.uuid4()
-        test_request_payload = {"email": f"test.{random_id}@amit.com",
-                                "password": f"password123",
-                                "first_name": 'test',
-                                "last_name": f'{random_id}',
-                                }
+    def test_a_create_user(self):
         response = self.client.post(f"{self.base_url}/create",
-                                    data=json.dumps(test_request_payload))
+                                    data=json.dumps(REQUEST_PAYLOAD))
         assert response.status_code == 201
         data = response.json()
         LOGGER.debug(f'Response: {data}')
         global new_user_id
         new_user_id = data.pop('id')
-        # assert data.get('description') == test_response_payload['description']
+        assert REQUEST_PAYLOAD['email'] == data['email']
 
-    # def test_create_user_invalid_json(self):
-    #     """create without required fields"""
-    #     response = self.client.post(f"{self.base_url}/",
-    #                                 data=json.dumps({"title": "something"}))
-    #     assert response.status_code == 422
-    # 
+    def test_create_duplicate_user(self):
+        """create without password field"""
+        response = self.client.post(f"{self.base_url}/create",
+                                    data=json.dumps(REQUEST_PAYLOAD))
+        assert response.status_code == 422
+
+    def test_create_user_invalid_json(self):
+        """create without password field"""
+        test_request_payload = REQUEST_PAYLOAD.copy()
+        test_request_payload['email'] = f'test.{uuid.uuid4()}@amit.com'
+        test_request_payload.pop('password')
+        response = self.client.post(f"{self.base_url}/create",
+                                    data=json.dumps(test_request_payload))
+        assert response.status_code == 422
+
     # def test_read_user(self):
     #     response = self.client.get(f"{self.base_url}/{new_user_id}/")
     #     assert response.status_code == 200
