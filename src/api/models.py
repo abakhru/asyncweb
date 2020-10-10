@@ -24,3 +24,8 @@ class UserDB(BaseModel):
     first_name: str
     last_name: str
     email: str
+
+
+class UserLoginSchema(BaseModel):
+    email: str
+    password: str

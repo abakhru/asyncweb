@@ -2,16 +2,20 @@ FROM python:3.8-slim-buster
 LABEL maintainer="amit <bakhru@me.com>"
 
 # set environment variables
-ENV USER=amit PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 WORKDIR=/app DEBIAN_FRONTEND=noninteractive
 ARG UID=1000
+ARG WORKDIR=/app
+ENV USER=amit PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive
+ENV VIRTUAL_ENV=/home/${USER}/env
 
 # set work directory
 WORKDIR ${WORKDIR}
 
 # create a non-root default user
 RUN useradd -d /home/${USER} -u ${UID} -ms /bin/bash ${USER} && \
-    echo "${USER}:${USER}" | chpasswd && adduser ${USER} sudo && \
+    echo "${USER}:${USER}" | chpasswd && \
     chown -R "${USER}:${USER}" "${HOME}" && \
+    # remove the sudo permissions when in production
+    adduser ${USER} sudo && \
     echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # install dependencies
@@ -33,8 +37,9 @@ RUN set -eux && \
 
 USER ${USER}
 COPY --chown=amit:amit . ${WORKDIR}/
-RUN echo "alias l='ls -larth'" >> /home/${USER}/.bashrc
+RUN echo "alias l='ls -larth'" >> /home/${USER}/.bashrc && \
+    bin/quick_start.sh
 
 EXPOSE 8000
 
-CMD ["bash", "-c", "python", "-m uvicorn src.server:app --reload --workers 1 --host 0.0.0.0 --port 8000"]
+CMD ["/app/bin/run.sh"]

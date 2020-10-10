@@ -25,20 +25,23 @@ services:
 #    networks:
 #      - aysncweb
 #
-#  web:
-##    build: .
-#    image: asyncweb:latest
-#    command: '/app/quick_start.sh'
-#    ports:
-#      - 8000:8000
-#    environment:
-#      - WORKDIR=/app
-#      - VIRTUAL_ENV=/app/env
-#      - DATABASE_URL=${DATABASE_URL}
-#    networks:
-#      - aysncweb
-#    depends_on:
-#      - db
+  web:
+#    build: .
+    image: asyncweb:latest
+    ports:
+      - 8000:8000
+    environment:
+      - WORKDIR=/app
+      - WORKSPACE=${WORKSPACE}
+      - VIRTUAL_ENV=${VIRTUAL_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+    command: '/app/bin/run.sh'
+    volumes:
+      - ${PWD}:/app
+    networks:
+      - aysncweb
+    depends_on:
+      - db
 
   db:
     image: postgres:12.1-alpine

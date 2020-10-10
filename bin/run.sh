@@ -1,10 +1,11 @@
 #!/bin/bash
 set -xe
 
-export WORKSPACE=${WORKSPACE:-$PWD}
-source "${WORKSPACE}/bin/exports.sh"
+BASE="$(dirname "$0")"
+export WORKSPACE="$(cd "${BASE}"/.. && pwd -P)"
 
 cd "${WORKSPACE}"
+source bin/exports.sh
 source "${VIRTUAL_ENV}"/bin/activate
 
 env | sort

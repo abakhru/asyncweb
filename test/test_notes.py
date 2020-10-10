@@ -11,7 +11,6 @@ new_note_id = 0
 
 
 class TestDbOps(TestCase):
-
     def setUp(self) -> None:
         super().setUp()
         self.client = requests.Session()
@@ -23,10 +22,8 @@ class TestDbOps(TestCase):
     def test_create_note(self):
         random_id = randint(1, 5000)
         test_request_payload = {"title": "something", "description": f"something else {random_id}"}
-        test_response_payload = {"title": "something",
-                                 "description": f"something else {random_id}"}
-        response = self.client.post(f"{self.base_url}/",
-                                    data=json.dumps(test_request_payload))
+        test_response_payload = {"title": "something", "description": f"something else {random_id}"}
+        response = self.client.post(f"{self.base_url}/", data=json.dumps(test_request_payload))
         assert response.status_code == 201
         data = response.json()
         # print(f'Response: {data}')
@@ -36,8 +33,7 @@ class TestDbOps(TestCase):
 
     def test_create_note_invalid_json(self):
         """create without required fields"""
-        response = self.client.post(f"{self.base_url}/",
-                                    data=json.dumps({"title": "something"}))
+        response = self.client.post(f"{self.base_url}/", data=json.dumps({"title": "something"}))
         assert response.status_code == 422
 
     def test_read_note(self):
@@ -56,25 +52,31 @@ class TestDbOps(TestCase):
         assert len(response.json()) >= 1
 
     def test_update_note(self):
-        test_response_payload = {"title": "something",
-                                 "description": f"something else {randint(1, 5000)}"}
-        response = self.client.post(f"{self.base_url}/",
-                                    data=json.dumps(test_response_payload))
+        test_response_payload = {
+            "title": "something",
+            "description": f"something else {randint(1, 5000)}",
+        }
+        response = self.client.post(f"{self.base_url}/", data=json.dumps(test_response_payload))
         global new_note_id
         new_note_id = response.json()['id']
-        test_update_data = {"title": "someone",
-                            "description": "newWWW someone else",
-                            "id": new_note_id}
-        response = self.client.put(f"{self.base_url}/{new_note_id}/",
-                                   data=json.dumps(test_update_data))
+        test_update_data = {
+            "title": "someone",
+            "description": "newWWW someone else",
+            "id": new_note_id,
+        }
+        response = self.client.put(
+            f"{self.base_url}/{new_note_id}/", data=json.dumps(test_update_data)
+        )
         assert response.status_code == 200
         assert response.json() == test_update_data
 
-    @parameterized.expand([
-        (1, {}, 422),
-        (1, {"description": "bar"}, 422),
-        (999, {"title": "foo", "description": "bar"}, 404),
-        ])
+    @parameterized.expand(
+        [
+            (1, {}, 422),
+            (1, {"description": "bar"}, 422),
+            (999, {"title": "foo", "description": "bar"}, 404),
+        ]
+    )
     def test_update_note_invalid(self, _id, payload, status_code):
         response = self.client.put(f"{self.base_url}/{_id}/", data=json.dumps(payload))
         assert response.status_code == status_code
