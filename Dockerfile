@@ -5,7 +5,6 @@ LABEL maintainer="amit <bakhru@me.com>"
 ARG UID=1000
 ARG WORKDIR=/app
 ENV USER=amit PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive
-ENV VIRTUAL_ENV=/home/${USER}/env
 
 # set work directory
 WORKDIR ${WORKDIR}

@@ -9,4 +9,5 @@ source "${VIRTUAL_ENV}"/bin/activate
 
 env | sort
 
+# docker-compose up -d --build
 docker build -t asyncweb -f ./Dockerfile .

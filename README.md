@@ -1,4 +1,4 @@
-### Simple aysnc RESET based Web app with PostgresSQL and FastAPI 
+### Simple async REST based Web app with PostgresSQL and FastAPI 
 
 - postgres database
 - CRUD operations support
@@ -8,8 +8,7 @@
 
 ### Build the docker containers and run the app
 ```
-# docker-compose up -d --build
-docker build -t asyncweb -f Dockerfile .
+bin/build_image.sh
 ```
 
 ### Access the app using following urls
