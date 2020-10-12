@@ -1,3 +1,5 @@
+import logging
+
 import uvicorn
 from fastapi import FastAPI
 
@@ -23,14 +25,14 @@ app.include_router(ping.router)
 app.include_router(notes.router, prefix="/notes", tags=["notes"])
 app.include_router(users.router, prefix="/users", tags=["user"])
 
-
-if __name__ == '__main__':
-    uvicorn.run(
-        app=app,
-        host="0.0.0.0",
-        port=8000,
-        log_level='debug',
-        debug=True,
-        use_colors=True,
-        reload=True,
-    )
+#
+# if __name__ == '__main__':
+#     uvicorn.run(
+#         app=app,
+#         host="0.0.0.0",
+#         port=8000,
+#         log_level='debug',
+#         debug=True,
+#         use_colors=True,
+#         reload=True,
+#     )

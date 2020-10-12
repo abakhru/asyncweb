@@ -4,8 +4,7 @@ from unittest import TestCase
 
 import requests
 
-# from src.utils.logger import LOGGER
-from test import LOGGER
+from src.utils.logger import LOGGER
 
 new_user_id = 0
 RANDOM_STRING = uuid.uuid4()
@@ -35,6 +34,15 @@ class TestUserOps(TestCase):
         # LOGGER.critical(f'Request: {self.json_response[""]}')
         LOGGER.info(f'[{self.test_case_name}] Response:'
                     f'\n{json.dumps(self.json_response, indent=4, sort_keys=True)}')
+
+    def test_login(self):
+        test_data = REQUEST_PAYLOAD.copy()
+        test_data.pop('first_name')
+        test_data.pop('last_name')
+        response = self.client.post(f"{self.base_url}/login", data=json.dumps(test_data))
+        assert response.status_code == 201
+        self.json_response = response.json()
+        assert REQUEST_PAYLOAD['email'] == self.json_response['email']
 
     def test_a_create_user(self):
         response = self.client.post(f"{self.base_url}/create", data=json.dumps(REQUEST_PAYLOAD))

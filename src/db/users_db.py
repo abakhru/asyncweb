@@ -1,10 +1,12 @@
 from src.api.models import UserSchema
-from src.db.base import database, session, users
+from src.db.base import database, users
 
 
 def get_user(**kwargs):
     for key, value in kwargs.items():
-        return session.query(eval('users.c.id')).filter(eval(f'users.c.{key}') == f'{value}').all()
+        # return session.query(eval('users.c.id')).filter(eval(f'users.c.{key}') == f'{value}').all()
+        query = users.select().where(eval(f'users.c.{key}') == f'{value}')
+        return database.execute(query=query)
 
 
 async def post(payload: UserSchema):

@@ -21,3 +21,4 @@ uvicorn
 docker_compose
 flask
 rich
+fastapi-login

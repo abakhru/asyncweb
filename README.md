@@ -32,9 +32,9 @@ for i in $(find ${PWD}/src -type f -name '*.py'); do black -S -l 100 $i; done
 - [ ] Authentication support
     - [x] simple username/password authentication
     - [ ] advance authentication support
-- [ ] expand db-schema with more columns
-- [ ] perform various SQL queries using jinja or something better SQL templates
-- [ ] more REST APIs definition
+- [x] expand db-schema with more columns
+- [x] perform various SQL queries using jinja or something better SQL templates
+- [x] more REST APIs definition
 - [ ] introduce GraphQL
 - [ ] test performance benchmark against similar CRUD synchronous webapp
 - [x] add basic sanity tests
