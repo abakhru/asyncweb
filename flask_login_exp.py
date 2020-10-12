@@ -2,6 +2,8 @@ import os
 
 from flask import Flask, flash, render_template, request, session
 
+from src.utils.logger import LOGGER
+
 app = Flask(__name__)
 
 
@@ -15,11 +17,12 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
+    LOGGER.debug(f'request form: {request.form}')
     if request.form['password'] == 'password' and request.form['username'] == 'admin':
         session['logged_in'] = True
     else:
         flash('wrong password!')
-    print(f'-==== LOGIN SUCCESS ===')
+    LOGGER.info(f'-==== LOGIN SUCCESS ===')
     return home()
 
 
