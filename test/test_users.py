@@ -24,7 +24,8 @@ class TestUserOps(TestCase):
         self.test_case_name = self.id().split(".").pop()
         LOGGER.warning(f'Running test "{self.test_case_name}"')
         self.client = requests.Session()
-        self.base_url = f'http://0.0.0.0:8000/users'
+        # self.base_url = f'http://0.0.0.0:8000/users'
+        self.base_url = f'http://0.0.0.0:4000'
         self.random_id = RANDOM_STRING
         LOGGER.debug(f'new_user_id: {new_user_id}')
         self.json_response = dict()

@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login.exceptions import InvalidCredentialsException
+from flask import render_template
 
 from src.db import users_db
 from src.api.models import UserDB, UserLoginSchema, UserSchema
@@ -11,6 +12,14 @@ from src.utils.auth import LOGIN_MANAGER
 from src.utils.logger import LOGGER
 
 router = APIRouter()
+
+
+@router.route('/')
+def home():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return "Hello Boss!"
 
 
 @router.post("/create", response_model=UserDB, status_code=201)
