@@ -36,6 +36,7 @@ for i in $(find ${PWD}/src -type f -name '*.py'); do black -S -l 100 $i; done
 - [x] perform various SQL queries using jinja or something better SQL templates
 - [x] more REST APIs definition
 - [ ] introduce GraphQL
+	- [ ] https://github.com/olirice/nebulo
 - [ ] test performance benchmark against similar CRUD synchronous webapp
 - [x] add basic sanity tests
 
