@@ -29,3 +29,17 @@ class UserDB(BaseModel):
 class UserLoginSchema(BaseModel):
     email: str
     password: str
+
+
+class User(BaseModel):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    created = Column(DATETIME_WITH_TIME_ZONE, default=datetime.now)
+
+    __table_args__ = (
+        Index("user_id_idx", "id"),
+        Index("user_name_idx", "name"),
+        )

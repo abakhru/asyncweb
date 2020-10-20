@@ -41,17 +41,17 @@ def create_user():
 
 @app.route('/login', methods=['POST'])
 def login():
-    # data = request.form.copy()
     data = request.form
     LOGGER.debug(f'data : {data}')
-    # import pdb;pdb.set_trace()
     email = data['username']
     password = data['password']
     user_id = users_db.get_user(email=email)
     LOGGER.info(f'User found: {user_id}')
     user = users_db.get(user_id)
     if any([not user,
-            password != user['password']]):
+            # password != user['password']
+        # password != user.
+            ]):
         raise InvalidCredentialsException
 
     access_token = LOGIN_MANAGER.create_access_token(data=dict(sub=email))
