@@ -1,37 +1,45 @@
 .PHONY: clean clean-build clean-pyc clean-out docs help
 .DEFAULT_GOAL := help
 
-# TODO
+# TODO
 help:
 
-## make clean
-clean: clean-tox clean-build clean-pyc clean-out
+## make clean
+clean: clean-build clean-pyc clean-out
 
-## remove build artifacts
+## remove build artifacts
 clean-build:
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
+	rm -rf build/
+	rm -rf dist/
+	rm -rf .eggs/
+	find . -name '*.egg-info' -exec rm -rf {} +
 	find . -name '*.egg' -exec rm -f {} +
 
-## remove python file artifacts
+## remove python file artifacts
 clean-pyc:
-	find . -name '__pycache__' -exec rm -fr {} +
+	find . -name '__pycache__' -exec rm -rf {} +
 
-## remove hydra outputs
+## remove hydra outputs
 clean-out:
-	rm -fr outputs/
-	rm -fr asyncweb_epoch_*.ckpt
+	rm -rf outputs/
+	rm -rf asyncweb_epoch_*.ckpt
 
-## remove tox cache
-clean-tox:
-	rm -fr .tox
+## start the services inside docker
+start:
+	bin/start_server.sh
 
-# check style with flake8
+## start the services inside docker
+stop:
+	docker-compose down && docker system prune -f
+
+## start the services inside docker
+start_local:
+	bin/start_local.sh
+
+# check style with flake8
 lint: lint-asyncweb lint-tests
 
-## check asyncweb style with flake8
+## check asyncweb style with flake8
 lint-asyncweb:
 	flake8 asyncweb
 
@@ -39,26 +47,26 @@ lint-asyncweb:
 lint-tests:
 	flake8 tests
 
-## run tests
-test:
-	pytest tests -n 20
+## build docker image
+build_image:
+	bin/build_image.sh
 
 ## build source and wheel package
 dist: clean 
 	python setup.py sdist bdist_wheel
 	ls -l dist
 
-## install the package to active site
+## install the package to active site
 install: clean 
 	pip install .
 
-# uninstall package from active site
+# uninstall package from active site
 uninstall: clean
 	pip uninstall asyncweb
 
-## run tests in tox envs
-tox:
-	tox
+## run tests in tox envs
+test:
+	pytest -sv
 
 ## helper for renaming
 find: 
