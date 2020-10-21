@@ -21,8 +21,7 @@ clean-pyc:
 
 ## remove hydra outputs
 clean-out:
-	rm -rf outputs/
-	rm -rf asyncweb_epoch_*.ckpt
+	rm -rf outputs/ .pytest_cache/ asyncweb_epoch_*.ckpt
 
 ## start the services inside docker
 start:
@@ -54,7 +53,6 @@ build_image:
 ## build source and wheel package
 dist: clean 
 	python setup.py sdist bdist_wheel
-	ls -l dist
 
 ## install the package to active site
 install: clean 
