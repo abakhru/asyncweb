@@ -1,6 +1,9 @@
 # from base import ModelBase, get_sql_table_data
-
+import json
 import os
+
+# from databases import Database
+from datetime import datetime
 
 from databases import Database
 from fastapi import HTTPException
@@ -10,7 +13,7 @@ from sqlalchemy.sql import func
 
 from src.utils.logger import LOGGER
 
-DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql://amit:amit@db/asyncweb')
+DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql://amit:amit@0.0.0.0/asyncweb')
 
 # SQLAlchemy
 engine = create_engine(DATABASE_URL)
@@ -56,28 +59,37 @@ def get_user(**kwargs):
 
 
 if __name__ == "__main__":
-    email = 'test.4248f1a1-8844-4936-813e-a6b49653ea2d@amit.com'
-    records = get_user(email=email)
-    for row in records:
-        print(row)
-
+    email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
+    password = 'password123'
+    # records = get_user(email=email)
+    # for row in records:
+    #     LOGGER.info(row)
+    result = (
+        session.query(users)
+        .filter(users.c.email == email, users.c.password_hash == password)
+        .first()
+    )
+    LOGGER.info(f'==== {result}')
+    print(type(result))
+    for i in result:
+        if not isinstance(i, datetime):
+            print(i)
     # users2 = Author(name="users2")
     # session.add(users2)
     # session.commit()
     # print(session.query(users).all())
 
     # query = session.query(users.c.email)
-    # print(query)
+    # # print(query)
     # records = query.all()
     # # do we do another select here to get the name?
     # # no, we just have [(1,), (2,)]
     # print(records)
     # records = session.query.all() # .where(id == users.c.id)
-    # query = session.query(users.c.email ==
-    #                       'test.4248f1a1-8844-4936-813e-a6b49653ea2d@amit.com')
+    # query = session.query(users.c.email == email)
     # print(query)
-    # records = query.scalar()
-    # print(records)
+    # records = query.all()
+    # LOGGER.info(records)
     # records = session.query(users).all()
     # records = session.query(users).filter(
     #     users.c.email == 'test.4248f1a1-8844-4936-813e-a6b49653ea2d@amit.com').all()
@@ -85,9 +97,9 @@ if __name__ == "__main__":
     # for row in records:
     #     print(row)
     #     print(type(row))
-    # def get(email: int):
+    # def get(email):
     #     query = users.select().where(email == users.c.email)
-    #     return database.fetch_one(query=query)
+    #     return database.fetch_all(query=query)
     #
     #
     # def read_user(email):
@@ -96,7 +108,8 @@ if __name__ == "__main__":
     #         raise HTTPException(status_code=404, detail="User not found")
     #     return user_id
     # record = read_user(email)
-    # print(record)
+    # for row in record:
+    #     LOGGER.info(f'==== {row}')
     # Now the query which may be useful if we want to group / order something
     # in a subquery and then get the full data
     # The subquery can return only ids and we then join the same table again to

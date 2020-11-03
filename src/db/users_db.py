@@ -1,12 +1,25 @@
 from src.api.models import UserSchema
-from src.db.base import database, users
+from src.db.base import database, session, users
+from src.utils.logger import LOGGER
 
 
 def get_user(**kwargs):
+    query_string = list()
     for key, value in kwargs.items():
-        # return session.query(eval('users.c.id')).filter(eval(f'users.c.{key}') == f'{value}').all()
-        query = users.select().where(eval(f'users.c.{key}') == f'{value}')
-        return database.execute(query=query)
+        query_string.append(f'users.c.{key} == "{value}"')
+    # LOGGER.debug(f'final query: {", ".join(query_string)}')
+    # return session.query(users).filter_by(**kwargs).first()
+    return (
+        session.query(users)
+        .filter_by(email=kwargs.get('username'), password_hash=kwargs.get('password_hash'))
+        .first()
+    )
+
+    # query = users.select().where(eval(f'users.c.{key}') == f'{value}')
+    # return database.execute(query=query)
+    # return database.execute(query=query)
+    # result = session.query(users).filter(users.c.email == email,
+    #                                      users.c.password_hash == password).first()
 
 
 async def post(payload: UserSchema):

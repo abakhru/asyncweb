@@ -1,8 +1,24 @@
 .PHONY: clean clean-build clean-pyc clean-out docs help
 .DEFAULT_GOAL := help
 
-# TODO
 help:
+	@ echo
+	@ echo '  Usage:'
+	@ echo ''
+	@ echo '    make <target> [flags...]'
+	@ echo ''
+	@ echo '  Targets:'
+	@ echo ''
+	@ awk '/^#/{ comment = substr($$0,3) } comment && /^[a-zA-Z][a-zA-Z0-9_-]+ ?:/{ print "   ", $$1, comment }' $(MAKEFILE_LIST) | column -t -s ':' | sort
+	@ echo ''
+	@ echo '  Flags:'
+	@ echo ''
+	@ awk '/^#/{ comment = substr($$0,3) } comment && /^[a-zA-Z][a-zA-Z0-9_-]+ ?\?=/{ print "   ", $$1, $$2, comment }' $(MAKEFILE_LIST) | column -t -s '?=' | sort
+	@ echo ''
+
+## build the python virtual env for the project
+venv:  clean
+	bin/quick_start.sh
 
 ## make clean
 clean: clean-build clean-pyc clean-out
@@ -35,7 +51,7 @@ stop:
 start_local:
 	bin/start_local.sh
 
-# check style with flake8
+## check style with flake8
 lint: lint-asyncweb lint-tests
 
 ## check asyncweb style with flake8
@@ -58,7 +74,7 @@ dist: clean
 install: clean 
 	pip install .
 
-# uninstall package from active site
+## uninstall package from active site
 uninstall: clean
 	pip uninstall asyncweb
 

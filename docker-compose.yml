@@ -30,27 +30,22 @@ services:
     image: asyncweb:latest
     ports:
       - 8000:8000
-    environment:
-      - WORKDIR=/app
-      - WORKSPACE=${WORKSPACE}
-      - VIRTUAL_ENV=${VIRTUAL_ENV}
-      - DATABASE_URL=${DATABASE_URL}
-    command: '/app/bin/run.sh'
+    env_file:
+      - .env
     volumes:
       - ${PWD}:/app
     networks:
       - aysncweb
     depends_on:
       - db
+    command: '/app/bin/run.sh'
 
   db:
     image: postgres:12.3-alpine
     volumes:
       - db-data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+      - .env
     networks:
       - aysncweb
     ports:

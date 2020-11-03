@@ -11,9 +11,11 @@ LOG_FORMAT = "%(asctime)s %(process)d %(name)s | %(message)s "
 V_LEVELS = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
 level = V_LEVELS.get(logging.INFO, logging.DEBUG)
 logging.basicConfig(
-        level=level, format=LOG_FORMAT, datefmt="[%X]",
-        handlers=[RichHandler(rich_tracebacks=True, show_time=True)]
-        )
+    level=level,
+    format=LOG_FORMAT,
+    datefmt="[%X]",
+    handlers=[RichHandler(rich_tracebacks=True, show_time=True)],
+)
 
 _STDERR_HANDLER = logging.StreamHandler(sys.stderr)
 _LOGGER_FORMAT = (

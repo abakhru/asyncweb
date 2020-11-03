@@ -16,4 +16,4 @@ cd "${WORKSPACE}"
 source bin/exports.sh
 
 pip3 install --no-cache-dir -U pip setuptools wheel
-pip3 install --no-cache-dir -e .
+pip3 install --no-cache-dir -e ".[testing]"

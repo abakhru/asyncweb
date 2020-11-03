@@ -18,7 +18,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Sample python REST app",
+    description="Async web python REST app",
     install_requires=Path('requirements.txt').read_text().splitlines(),
     license="MIT license",
     long_description=Path('README.md').read_text(),
@@ -30,4 +30,5 @@ setup(
     url='https://github.com/abakhru/asyncweb',
     version='0.1.0',
     zip_safe=False,
+    extras_require={'testing': Path('requirements_dev.txt').read_text().splitlines()}
 )

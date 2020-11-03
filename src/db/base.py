@@ -6,9 +6,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql import func
 
+from src.conf import config
 from src.utils.logger import LOGGER
 
-DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql://amit:amit@db/asyncweb')
+db_conf = config['database']
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    (
+        f'{db_conf["database"]}+{db_conf["postgres_adapter"]}://'
+        f'{db_conf["postgres_user"]}:{db_conf["postgres_password"]}@'
+        f'{db_conf["postgres_server"]}:{db_conf["postgres_port"]}/'
+        f'{db_conf["postgres_db"]}'
+    ),
+)
 
 # SQLAlchemy
 engine = create_engine(DATABASE_URL)

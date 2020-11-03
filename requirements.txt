@@ -1,13 +1,10 @@
-bandit
 click
 colorlog
 httpie
 pandas
-parameterized
 parse
 psycopg2
 pyquery
-pytest
 python_dateutil
 requests
 tabulate
@@ -22,3 +19,8 @@ docker_compose
 flask
 rich
 fastapi-login
+flask_login
+jwt
+bcrypt
+passlib
+emails

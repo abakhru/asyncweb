@@ -1,0 +1,33 @@
+{
+    "project": {
+        "project_name": "asyncweb",
+        "project_description": "Async web python REST app",
+        "api_version": "1.0.0",
+        "api_version_path": "/api/v1",
+        "access_token_expire_minutes": 30,
+        "server_name": "web backend",
+        "server_host": "http://localhost:8081",
+        "backend_cors_origins": ["*"],
+        "salt_generation_rounds": 14,
+        "secret_key_salt_generation_rounds": 16,
+        "secret" : "9e39f31f4e5512f79db5b61eeaca238770bad7d7ca787eb8",
+        "password_history_lookback":  8,
+        "default_password_prefix": 1,
+        "algorithm": "HS256"
+
+    },
+    "email": {
+        "email_reset_token_expire_hours": 15,
+        "email_id": "",
+        "email_password": ""
+    },
+    "database": {
+        "database": "postgres",
+        "postgres_server": "localhost",
+        "postgres_port": "5432",
+        "postgres_user": "postgres",
+        "postgres_password": "root",
+        "postgres_db": "blogs",
+        "postgres_adapter": "psycopg2"
+    }
+}
