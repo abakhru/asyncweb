@@ -28,17 +28,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/getToken")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-    ) -> UserVerify:
+) -> UserVerify:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
-        )
+    )
     expire_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="access expired",
         headers={"WWW-Authenticate": "Bearer"},
-        )
+    )
     try:
         payload = access_token.decode_access_token(token=token)
         token_validity = payload.get("exp")

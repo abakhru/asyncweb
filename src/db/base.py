@@ -16,10 +16,12 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     # postgresql://amit:amit@db/asyncweb
-    DATABASE_URL = (f'{db_conf["database"]}://'
-                    f'{db_conf["postgres_user"]}:{db_conf["postgres_password"]}@'
-                    f'{db_conf["postgres_server"]}:{db_conf["postgres_port"]}/'
-                    f'{db_conf["postgres_db"]}')
+    DATABASE_URL = (
+        f'{db_conf["database"]}://'
+        f'{db_conf["postgres_user"]}:{db_conf["postgres_password"]}@'
+        f'{db_conf["postgres_server"]}:{db_conf["postgres_port"]}/'
+        f'{db_conf["postgres_db"]}'
+    )
 
 LOGGER.debug(f'Database-url : {DATABASE_URL}')
 # SQLAlchemy
@@ -40,7 +42,7 @@ notes_table = Table(
     Column("title", String(50)),
     Column("description", String(50)),
     Column("created_date", DateTime, default=func.now(), nullable=False),
-    )
+)
 
 LOGGER.debug(f'Creating "users" table ..')
 users_table = Table(
@@ -58,7 +60,7 @@ users_table = Table(
     Column("last_name", String(128), nullable=False),
     Column("consecutive_resets", Integer, nullable=True, default=0),
     Column("reset_lockout_ends", DateTime, default=func.now()),
-    )
+)
 
 # databases query builder
 database = Database(DATABASE_URL)

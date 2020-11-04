@@ -13,10 +13,12 @@ class AccessToken:
     def __init__(self):
         self.__instance = JWT()
         self.__algorithm = "RS256"
-        self.__signing_key = jwk_from_pem(APP_HOME.joinpath('src', 'auth',
-                                                            'jwtRS256_private.pem').read_bytes())
-        self.__verifying_key = jwk_from_pem(APP_HOME.joinpath('src', 'auth',
-                                                              'jwtRS256_public.pem').read_bytes())
+        self.__signing_key = jwk_from_pem(
+            APP_HOME.joinpath('src', 'auth', 'jwtRS256_private.pem').read_bytes()
+        )
+        self.__verifying_key = jwk_from_pem(
+            APP_HOME.joinpath('src', 'auth', 'jwtRS256_public.pem').read_bytes()
+        )
 
     def create_access_token(self, *, data: dict, expires_delta: timedelta = None) -> str:
         to_encode = data.copy()

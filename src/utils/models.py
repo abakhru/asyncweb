@@ -42,12 +42,12 @@ class UserLoginSchema(BaseModel):
 class UserModel(UserMixin, db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(Integer, primary_key=True)
-    email = db.Column(String(80), unique=True)
-    name = Column(String, unique=True, nullable=False)
-    username = db.Column(String(100))
-    password_hash = db.Column(String())
-    created = Column(DATETIME_WITH_TIME_ZONE, default=datetime.now)
+    id = Column("id", Integer, primary_key=True),
+    email = Column("email", String(128), nullable=False, unique=True),
+    password_hash = Column("password_hash", String(256), nullable=False, default=''),
+    first_name = Column("first_name", String(128), nullable=False),
+    last_name = Column("last_name", String(128), nullable=False),
+    created_at = Column("created_at", DATETIME_WITH_TIME_ZONE, default=datetime.now)
 
     __table_args__ = (
         Index("user_id_idx", "id"),
@@ -75,7 +75,8 @@ class UserVerify(UserBase):
 
 class UserCreate(UserBase):
     password: str
-    name: str
+    first_name: str
+    last_name: str
 
 
 class UserUpdate(UserBase):

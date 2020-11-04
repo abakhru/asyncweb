@@ -1,8 +1,8 @@
-
 from datetime import datetime
 
 from src.db.base import session, users_table
 from src.utils.logger import LOGGER
+from src.utils.models import UserModel
 
 
 def get_user(**kwargs):
@@ -13,12 +13,24 @@ def get_user(**kwargs):
 if __name__ == "__main__":
     email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
     password = 'password123'
+    db = session
     # records = get_user(email=email)
-    result = get_user(email=email)
+    # result = get_user(email=email)
     # for row in records:
     #     LOGGER.info(row)
     # result = session.query(users_table).filter(users_table.c.email == email,
     #                                            users_table.c.password_hash == password).first()
+    # result = users_table.insert().values(email="test.88888888888888@amit.com",
+    #                                      first_name="abc",
+    #                                      last_name="def",
+    #                                      password=get_password_hash(str('password123')))
+    result = UserModel(email="test.88888888888888@amit.com",
+                       first_name="abc",
+                       last_name="def",
+                       password='password123')
+    db.add(result)
+    db.commit()
+    db.refresh(result)
     LOGGER.info(f'==== {result}')
     print(type(result))
     for i in result:

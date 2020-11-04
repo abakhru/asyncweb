@@ -19,8 +19,11 @@ def __get_user_item__(**kwargs):
 
 def create_user(db: Session, user: UserCreate) -> Any:
     try:
-        hashed_password = get_password_hash(str(user.password))
-        db_user = users_table(email=user.email, password=hashed_password, name=user.name)
+        db_user = users_table.insert().values(email=user.email,
+                                              first_name=user.first_name,
+                                              last_name=user.last_name,
+                                              password=get_password_hash(str(user.password))
+                                              )
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -70,27 +73,26 @@ def delete_user(db: Session, user_id: int) -> Any:
 
 def verify_user(db: Session, email: str) -> Any:
     try:
-        data = db.query(users_table.c.id,
-                        users_table.c.email).filter(users_table.c.email == email).first()
+        data = (
+            db.query(users_table.c.id, users_table.c.email)
+                .filter(users_table.c.email == email)
+                .first()
+        )
         return data
     except SQLAlchemyError as _:
         LOGGER.exception("verify_user")
         return None
 
 
-# def get_user(db: Session, email: str) -> Any:
-#     try:
-#         data = db.query(users_table).filter(users_table.email == email).options(defer('password')).first()
-#         return data
-#     except SQLAlchemyError as _:
-#         LOGGER.exception("get_user")
-#         return None
-
-
 def get_user_id(db: Session, id: int) -> Any:
     try:
-        data = db.query(users_table).filter(users_table.c.id == id).options(defer(
-            'password_hash')).first()
+        # data = (
+        #     db.query(users_table)
+        #     .filter(users_table.c.id == id)
+        #     .options(defer('password_hash'))
+        #     .first()
+        # )
+        data = __get_user_item__(id=id)
         return data
     except SQLAlchemyError as _:
         LOGGER.exception("get_user_id")

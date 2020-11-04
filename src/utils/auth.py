@@ -65,7 +65,7 @@ def hash_password_preprocess(obj):
 
 
 def get_password_hash(password: str):
-    return pwd_context.hash(password)
+    return hash_password(password)
 
 
 def verify_password(plain_password: str, hashed_password: str):
