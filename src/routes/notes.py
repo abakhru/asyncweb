@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 
 from src.db import notes_db
-from src.api.models import NoteDB, NoteSchema
+from src.utils.models import NoteDB, NoteSchema
 
 router = APIRouter()
 

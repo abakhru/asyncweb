@@ -97,10 +97,12 @@
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from flask import render_template
 from sqlalchemy.orm import Session
 
-from src.api.models import UserCreate, UserUpdate, UserVerify
+from src.utils.models import UserCreate, UserUpdate, UserVerify
 from src.db import crud
+from src.db.base import session
 from src.utils.deps import get_db, get_current_user
 from src.utils.response_schemas import (
     all_users_responses,

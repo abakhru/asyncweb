@@ -1,29 +1,28 @@
-from src.api.models import UserSchema
-from src.db.base import database, session, users
-from src.utils.logger import LOGGER
+from src.utils.models import UserSchema
+from src.db.base import database, session, users_table
 
 
 def get_user(**kwargs):
     query_string = list()
     for key, value in kwargs.items():
-        query_string.append(f'users.c.{key} == "{value}"')
+        query_string.append(f'users_table.c.{key} == "{value}"')
     # LOGGER.debug(f'final query: {", ".join(query_string)}')
-    # return session.query(users).filter_by(**kwargs).first()
+    # return session.query(users_table).filter_by(**kwargs).first()
     return (
-        session.query(users)
+        session.query(users_table)
         .filter_by(email=kwargs.get('username'), password_hash=kwargs.get('password_hash'))
         .first()
     )
 
-    # query = users.select().where(eval(f'users.c.{key}') == f'{value}')
+    # query = users_table.select().where(eval(f'users_table.c.{key}') == f'{value}')
     # return database.execute(query=query)
     # return database.execute(query=query)
-    # result = session.query(users).filter(users.c.email == email,
-    #                                      users.c.password_hash == password).first()
+    # result = session.query(users_table).filter(users_table.c.email == email,
+    #                                      users_table.c.password_hash == password).first()
 
 
 async def post(payload: UserSchema):
-    query = users.insert().values(
+    query = users_table.insert().values(
         email=payload.email,
         first_name=payload.first_name,
         last_name=payload.last_name,
@@ -33,23 +32,23 @@ async def post(payload: UserSchema):
 
 
 async def get(id: int):
-    query = users.select().where(id == users.c.id)
+    query = users_table.select().where(id == users_table.c.id)
     return await database.fetch_one(query=query)
 
 
 async def put(id: int, payload: UserSchema):
     query = (
-        users.update()
-        .where(id == users.c.id)
+        users_table.update()
+        .where(id == users_table.c.id)
         .values(
             first_name=payload.first_name,
             last_name=payload.last_name,
         )
-        .returning(users.c.id)
+        .returning(users_table.c.id)
     )
     return await database.execute(query=query)
 
 
 async def delete(id: int):
-    query = users.delete().where(id == users.c.id)
+    query = users_table.delete().where(id == users_table.c.id)
     return await database.execute(query=query)

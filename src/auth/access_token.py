@@ -12,7 +12,7 @@ secret_key = config['project']['secret']
 class AccessToken:
     def __init__(self):
         self.__instance = JWT()
-        self.__algorithm = config['project']['algorithm']
+        self.__algorithm = "RS256"
         self.__signing_key = jwk_from_pem(APP_HOME.joinpath('src', 'auth',
                                                             'jwtRS256_private.pem').read_bytes())
         self.__verifying_key = jwk_from_pem(APP_HOME.joinpath('src', 'auth',

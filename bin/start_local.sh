@@ -11,7 +11,8 @@ if [ ! -f "/.dockerenv" ]; then
 fi
 source bin/exports.sh
 
-env | sort
+#env | sort
 
 cd "${WORKSPACE}"
 python3 -m uvicorn src.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
+#python3 "${WORKSPACE}"/src/server.py

@@ -1,22 +1,28 @@
 # """ Utility for all things authentication related """
+from typing import Any
 
 from bcrypt import gensalt, hashpw
-from fastapi_login import LoginManager
-from passlib.context import CryptContext
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
-from src.api.models import User
 from src.conf import config
-from src.db.base import users
+from src.db import crud
+from src.db.base import pwd_context, users_table
+from src.utils.logger import LOGGER
+from src.utils.models import User, UserAuthenticate
 
-login = LoginManager(secret=config['project']['secret'], tokenUrl='/auth/token')
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def check_username_password(db: Session, user: UserAuthenticate) -> Any:
+    # db_user_info = get_user(db, email=user.email)
+    db_user_info = crud.__get_user_item__(email=user.email)
+    return verify_password(str(user.password), str(db_user_info.password_hash))
 
 
 def find_user(session, username, password):
     """
     Checks for a user with the given username, password combination
     """
-    user_ = session.query(users).filter_by(name=username).first()
+    user_ = session.query(users_table).filter_by(name=username).first()
     if user_:
         hashed_password = user_.password
         hashed_password = hashed_password.encode("utf-8")
@@ -27,14 +33,14 @@ def find_user(session, username, password):
     return None
 
 
-def get_user(session, username):
-    """
-    returns the user properties for the user with the given username, if there is one
-    """
-    user = session.query(users).filter_by(name=username).first()
-    if user:
-        return user.id, user.name, user.password
-    return None, None, None
+def get_user(db: Session, email: str) -> Any:
+    try:
+        # data = db.query(users_table).filter_by(email=email).options(defer('password_hash')).first()
+        data = crud.__get_user_item__(email=email)
+        return data
+    except SQLAlchemyError as _:
+        LOGGER.exception("get_user")
+        return None
 
 
 def hash_password(password):
@@ -64,4 +70,7 @@ def get_password_hash(password: str):
 
 def verify_password(plain_password: str, hashed_password: str):
     # return checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
-    return pwd_context.verify(plain_password, hashed_password)
+    LOGGER.info(f'plain: {plain_password}')
+    LOGGER.info(f'hashed: {hashed_password}')
+    # return pwd_context.verify(plain_password, hashed_password)
+    return plain_password == hashed_password

@@ -1,74 +1,24 @@
-# from base import ModelBase, get_sql_table_data
-import json
-import os
 
-# from databases import Database
 from datetime import datetime
 
-from databases import Database
-from fastapi import HTTPException
-from sqlalchemy import Column, DateTime, Integer, MetaData, String, Table, create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import func
-
+from src.db.base import session, users_table
 from src.utils.logger import LOGGER
-
-DATABASE_URL = os.getenv("DATABASE_URL", 'postgresql://amit:amit@0.0.0.0/asyncweb')
-
-# SQLAlchemy
-engine = create_engine(DATABASE_URL)
-metadata = MetaData()
-Session = sessionmaker(bind=engine)
-session = Session()
-
-LOGGER.debug(f'Creating "notes" table ..')
-notes = Table(
-    "notes",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("title", String(50)),
-    Column("description", String(50)),
-    Column("created_date", DateTime, default=func.now(), nullable=False),
-)
-
-LOGGER.debug(f'Creating "users" table ..')
-users = Table(
-    "users",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("created_at", DateTime, default=func.now()),
-    Column("last_modified", DateTime, default=func.now()),
-    Column("deleted_at", DateTime, default=func.now()),
-    Column("email", String(128), nullable=False),
-    Column("password_hash", String(256), nullable=False, default=''),
-    Column("consecutive_failures", Integer, nullable=True, default=0),
-    Column("lockout_ends", DateTime, default=func.now()),
-    Column("first_name", String(128), nullable=False),
-    Column("last_name", String(128), nullable=False),
-    Column("consecutive_resets", Integer, nullable=True, default=0),
-    Column("reset_lockout_ends", DateTime, default=func.now()),
-)
-
-# databases query builder
-database = Database(DATABASE_URL)
 
 
 def get_user(**kwargs):
     for key, value in kwargs.items():
-        return session.query(eval('users.c.id')).filter(eval(f'users.c.{key}') == f'{value}').all()
+        return session.query(users_table).filter(eval(f'users_table.c.{key}') == f'{value}').first()
 
 
 if __name__ == "__main__":
     email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
     password = 'password123'
     # records = get_user(email=email)
+    result = get_user(email=email)
     # for row in records:
     #     LOGGER.info(row)
-    result = (
-        session.query(users)
-        .filter(users.c.email == email, users.c.password_hash == password)
-        .first()
-    )
+    # result = session.query(users_table).filter(users_table.c.email == email,
+    #                                            users_table.c.password_hash == password).first()
     LOGGER.info(f'==== {result}')
     print(type(result))
     for i in result:

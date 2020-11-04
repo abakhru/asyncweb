@@ -4,12 +4,15 @@ from unittest import TestCase
 
 import requests
 
+from src.conf import config
 from src.utils.logger import LOGGER
 
 new_user_id = 0
 RANDOM_STRING = uuid.uuid4()
+email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
 REQUEST_PAYLOAD = {
-    "email": f"test.{RANDOM_STRING}@amit.com",
+    # "email": f"test.{RANDOM_STRING}@amit.com",
+    "email": email,
     "password": f"password123",
     "first_name": 'test',
     "last_name": f'{RANDOM_STRING}',
@@ -24,8 +27,8 @@ class TestUserOps(TestCase):
         self.test_case_name = self.id().split(".").pop()
         LOGGER.warning(f'Running test "{self.test_case_name}"')
         self.client = requests.Session()
-        # self.base_url = f'http://0.0.0.0:8000/users'
-        self.base_url = f'http://0.0.0.0:4000'
+        self.base_url = (f'http://{config["project"]["server_host"]}:'
+                         f'{config["project"]["server_port"]}')
         self.random_id = RANDOM_STRING
         LOGGER.debug(f'new_user_id: {new_user_id}')
         self.json_response = dict()

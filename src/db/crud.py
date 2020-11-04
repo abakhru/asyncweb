@@ -3,21 +3,24 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, defer
 
-from src.api.models import User, UserAuthenticate, UserCreate, UserUpdate
-from src.utils.auth import verify_password
+from src.db.base import pwd_context, session, users_table
 from src.utils.logger import LOGGER
+from src.utils.models import UserCreate, UserUpdate
 
 
-def check_username_password(db: Session, user: UserAuthenticate) -> Any:
-    db_user_info = get_user(db, email=user.email)
+def get_password_hash(password: str):
+    return pwd_context.hash(password)
 
-    return verify_password(str(user.password), str(db_user_info.password))
+
+def __get_user_item__(**kwargs):
+    for key, value in kwargs.items():
+        return session.query(users_table).filter(eval(f'users_table.c.{key}') == f'{value}').first()
 
 
 def create_user(db: Session, user: UserCreate) -> Any:
     try:
         hashed_password = get_password_hash(str(user.password))
-        db_user = User(email=user.email, password=hashed_password, name=user.name)
+        db_user = users_table(email=user.email, password=hashed_password, name=user.name)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -29,7 +32,7 @@ def create_user(db: Session, user: UserCreate) -> Any:
 
 def update_user(db: Session, user_id: int, user: UserUpdate) -> Any:
     try:
-        db_user = db.query(User).filter(User.id == user_id).first()
+        db_user = db.query(users_table).filter(users_table.c.id == user_id).first()
         db_user.name = user.name
         db.commit()
         db.refresh(db_user)
@@ -42,7 +45,7 @@ def update_user(db: Session, user_id: int, user: UserUpdate) -> Any:
 def update_user_password(db: Session, email: str, password: str) -> Any:
     try:
         hashed_password = get_password_hash(password)
-        db_user = db.query(User).filter(User.email == email).first()
+        db_user = db.query(users_table).filter(users_table.c.email == email).first()
         db_user.password = hashed_password
         db.commit()
         db.refresh(db_user)
@@ -54,9 +57,9 @@ def update_user_password(db: Session, email: str, password: str) -> Any:
 
 def delete_user(db: Session, user_id: int) -> Any:
     try:
-        # db_user = db.query(User).filter(User.id == user_id)
+        # db_user = db.query(users).filter(users.id == user_id)
         # db.delete(db_user)
-        db.query(User).filter(User.id == user_id).delete()
+        db.query(users_table).filter(users_table.c.id == user_id).delete()
         db.commit()
         # db.refresh(db_user)
         return True
@@ -67,25 +70,27 @@ def delete_user(db: Session, user_id: int) -> Any:
 
 def verify_user(db: Session, email: str) -> Any:
     try:
-        data = db.query(User.id, User.email).filter(User.email == email).first()
+        data = db.query(users_table.c.id,
+                        users_table.c.email).filter(users_table.c.email == email).first()
         return data
     except SQLAlchemyError as _:
         LOGGER.exception("verify_user")
         return None
 
 
-def get_user(db: Session, email: str) -> Any:
-    try:
-        data = db.query(User).filter(User.email == email).options(defer('password')).first()
-        return data
-    except SQLAlchemyError as _:
-        LOGGER.exception("get_user")
-        return None
+# def get_user(db: Session, email: str) -> Any:
+#     try:
+#         data = db.query(users_table).filter(users_table.email == email).options(defer('password')).first()
+#         return data
+#     except SQLAlchemyError as _:
+#         LOGGER.exception("get_user")
+#         return None
 
 
 def get_user_id(db: Session, id: int) -> Any:
     try:
-        data = db.query(User).filter(User.id == id).options(defer('password')).first()
+        data = db.query(users_table).filter(users_table.c.id == id).options(defer(
+            'password_hash')).first()
         return data
     except SQLAlchemyError as _:
         LOGGER.exception("get_user_id")
@@ -95,7 +100,7 @@ def get_user_id(db: Session, id: int) -> Any:
 # https://docs.sqlalchemy.org/en/13/orm/loading_columns.html#deferred
 def get_all_user(db: Session) -> Any:
     try:
-        data = db.query(User).options(defer('password')).all()
+        data = db.query(users_table).options(defer('password')).all()
         return data
     except SQLAlchemyError as _:
         LOGGER.exception("get_all_user")

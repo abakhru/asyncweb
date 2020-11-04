@@ -6,7 +6,8 @@
         "api_version_path": "/api/v1",
         "access_token_expire_minutes": 30,
         "server_name": "web backend",
-        "server_host": "http://localhost:8081",
+        "server_host": "0.0.0.0",
+        "server_port": 8000,
         "backend_cors_origins": ["*"],
         "salt_generation_rounds": 14,
         "secret_key_salt_generation_rounds": 16,
@@ -23,11 +24,11 @@
     },
     "database": {
         "database": "postgres",
-        "postgres_server": "localhost",
+        "postgres_server": "0.0.0.0",
         "postgres_port": "5432",
-        "postgres_user": "postgres",
-        "postgres_password": "root",
-        "postgres_db": "blogs",
+        "postgres_user": "amit",
+        "postgres_password": "amit",
+        "postgres_db": "asyncweb",
         "postgres_adapter": "psycopg2"
     }
 }

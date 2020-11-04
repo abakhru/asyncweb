@@ -5,6 +5,7 @@ from unittest import TestCase
 import requests
 from parameterized import parameterized
 
+from src.conf import config
 from src.utils.logger import LOGGER
 
 new_note_id = 0
@@ -14,10 +15,10 @@ class TestDbOps(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.client = requests.Session()
-        self.base_url = f'http://0.0.0.0:8000/notes'
+        self.base_url = (f'http://{config["project"]["server_host"]}:'
+                         f'{config["project"]["server_port"]}/notes')
         id_list = self.id().split('.')
         LOGGER.info(f'Running test "{id_list.pop()}"')
-        # print(f'==== New Id of note: {new_note_id}')
 
     def test_create_note(self):
         random_id = randint(1, 5000)
