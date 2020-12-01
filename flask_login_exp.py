@@ -43,7 +43,6 @@ def login():
     raise InvalidCredentialsException
 
 
-
 # @app.route("/create", methods=['POST'])
 # def create_user():
 #     payload = request.form

@@ -19,11 +19,12 @@ def __get_user_item__(**kwargs):
 
 def create_user(db: Session, user: UserCreate) -> Any:
     try:
-        db_user = users_table.insert().values(email=user.email,
-                                              first_name=user.first_name,
-                                              last_name=user.last_name,
-                                              password=get_password_hash(str(user.password))
-                                              )
+        db_user = users_table.insert().values(
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            password=get_password_hash(str(user.password)),
+        )
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -75,8 +76,8 @@ def verify_user(db: Session, email: str) -> Any:
     try:
         data = (
             db.query(users_table.c.id, users_table.c.email)
-                .filter(users_table.c.email == email)
-                .first()
+            .filter(users_table.c.email == email)
+            .first()
         )
         return data
     except SQLAlchemyError as _:

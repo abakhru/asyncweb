@@ -27,8 +27,9 @@ class TestUserOps(TestCase):
         self.test_case_name = self.id().split(".").pop()
         LOGGER.warning(f'Running test "{self.test_case_name}"')
         self.client = requests.Session()
-        self.base_url = (f'http://{config["project"]["server_host"]}:'
-                         f'{config["project"]["server_port"]}')
+        self.base_url = (
+            f'http://{config["project"]["server_host"]}:' f'{config["project"]["server_port"]}'
+        )
         self.random_id = RANDOM_STRING
         LOGGER.debug(f'new_user_id: {new_user_id}')
         self.json_response = dict()
@@ -36,8 +37,10 @@ class TestUserOps(TestCase):
     def tearDown(self) -> None:
         super().tearDown()
         # LOGGER.critical(f'Request: {self.json_response[""]}')
-        LOGGER.info(f'[{self.test_case_name}] Response:'
-                    f'\n{json.dumps(self.json_response, indent=4, sort_keys=True)}')
+        LOGGER.info(
+            f'[{self.test_case_name}] Response:'
+            f'\n{json.dumps(self.json_response, indent=4, sort_keys=True)}'
+        )
 
     def test_login(self):
         test_data = REQUEST_PAYLOAD.copy()
@@ -118,6 +121,7 @@ class TestUserOps(TestCase):
         assert response.status_code == 200
         self.json_response = response.json()
         assert self.json_response['id'] == test_data['id']
+
     #
     # def test_remove_user_incorrect_id(self):
     #     response = self.client.delete(f"{self.base_url}/999/")

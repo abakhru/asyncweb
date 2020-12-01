@@ -108,7 +108,7 @@ from src.utils.response_schemas import (
     all_users_responses,
     general_responses,
     single_users_responses,
-    )
+)
 
 router = APIRouter()
 
@@ -118,8 +118,9 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)) -> JSON
     user_id = auth.get_user(db, email=user.email)
     LOGGER.debug(f'[create_user] user id: {user_id}')
     if user_id is not None:
-        return JSONResponse(status_code=400,
-                            content={"message": f"{user.email} already registered"})
+        return JSONResponse(
+            status_code=400, content={"message": f"{user.email} already registered"}
+        )
     user_id = await users_db.post(user)
     if user_id is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
@@ -132,7 +133,7 @@ def update_user(
     user: UserUpdate,
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
-    ) -> JSONResponse:
+) -> JSONResponse:
     data = crud.update_user(db, user_id=user_id, user=user)
     if data is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
@@ -144,7 +145,7 @@ def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
-    ) -> JSONResponse:
+) -> JSONResponse:
     data = crud.delete_user(db, user_id=user_id)
     if data is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
@@ -156,7 +157,7 @@ def single_user(
     user_id: int,
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
-    ) -> JSONResponse:
+) -> JSONResponse:
     db_user = crud.get_user_id(db, id=user_id)
     if db_user is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
@@ -168,7 +169,7 @@ def single_user(
 def all_user(
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
-    ) -> JSONResponse:
+) -> JSONResponse:
     db_user = crud.get_all_user(db)
     if db_user is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})

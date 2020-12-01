@@ -80,9 +80,15 @@ uninstall: clean
 
 ## run tests in tox envs
 test:
-	pytest -sv
+	#docker stop $(MONGODB_CONTAINER_NAME) || true
+	#docker run -d --rm --name $(MONGODB_CONTAINER_NAME) -p 27017:27017 mongo:4.2
+	pytest -sv --cov=fastapi_users/ --cov-report=term-missing
+	#docker stop $(MONGODB_CONTAINER_NAME)
 
 ## helper for renaming
 find: 
 	@read -p "Enter Term: " term; \
 	grep -rnw ./ -e "$$term"
+
+format:
+	black --skip-string-normalization --line-length 100 src test

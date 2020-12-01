@@ -15,8 +15,10 @@ class TestDbOps(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.client = requests.Session()
-        self.base_url = (f'http://{config["project"]["server_host"]}:'
-                         f'{config["project"]["server_port"]}/notes')
+        self.base_url = (
+            f'http://{config["project"]["server_host"]}:'
+            f'{config["project"]["server_port"]}/notes'
+        )
         id_list = self.id().split('.')
         LOGGER.info(f'Running test "{id_list.pop()}"')
 

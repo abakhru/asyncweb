@@ -48,14 +48,14 @@ class UserManagementTestCase(BlackboxBaseTestCase):
         self.user = '{}_{}'.format(self.test_case_name, GenericUtilities.get_unique_id())
 
     def test_assume_child(self):
-        '''
+        """
         This test is used to ensure that a parent can retrieve a child user's data by utilizing
         the users/assume_child functionality.
         TODO: When we have endpoints to update a customer or user's permissions, increase testing
         coverage to verify that the child is assumed in read-only mode when these permisisons
         are changed to read-only, and the child cannot be assumed when these permissions are
         removed.
-        '''
+        """
         # Create user of parent customer with account delegation admin
         parent_first_name = self.user + '-Parent'
         rv = self.blackbox_server.CreateUser(
@@ -194,7 +194,8 @@ class UserManagementTestCase(BlackboxBaseTestCase):
 
         # Join user to ADMIN SCIM Group and be sure the read only role is selected
         rv = self.rest_driver.Post(
-            '/users/{}/scim_groups/{}'.format(user_id, SCIM_GROUP_ADMIN_ID), data=json.dumps({}),
+            '/users/{}/scim_groups/{}'.format(user_id, SCIM_GROUP_ADMIN_ID),
+            data=json.dumps({}),
         )
         assert rv.status_code == 200
         data = json.loads(rv.text)['data']
@@ -253,7 +254,8 @@ class UserManagementTestCase(BlackboxBaseTestCase):
 
         # Create permission
         rv = self.rest_driver.Post(
-            '/users/{}/permission'.format(user_id), data=json.dumps({'permission': 'child admin'}),
+            '/users/{}/permission'.format(user_id),
+            data=json.dumps({'permission': 'child admin'}),
         )
         assert rv.status_code == 200
         user = json.loads(rv.text)['data']
@@ -529,7 +531,13 @@ class UserManagementTestCase(BlackboxBaseTestCase):
         if configuration.ENABLE_TFA:
             rv = self.rest_driver.Post(
                 '/users/authenticate/',
-                data=json.dumps({'email': email, 'password': 'whysosassy', 'token': '123456',}),
+                data=json.dumps(
+                    {
+                        'email': email,
+                        'password': 'whysosassy',
+                        'token': '123456',
+                    }
+                ),
             )
             data = json.loads(rv.text)
             LOGGER.info(f'Password expired login data: {data}')
@@ -752,9 +760,9 @@ class UserManagementTestCase(BlackboxBaseTestCase):
 
     # User notifications create and read ---------------------------------------
     def test_user_notifications_crud(self):
-        '''
+        """
         Test "fetch notifications"
-        '''
+        """
         LOGGER.info('Test "fetch notifications"')
         rv = self.rest_driver.Post(
             '/users/create/',
@@ -824,7 +832,8 @@ class UserManagementTestCase(BlackboxBaseTestCase):
         '''
         LOGGER.info('Test "mark notification as read"')
         rv = self.rest_driver.Post(
-            f'/users/{user_id}/notifications/{user_notification_id}/read', data=json.dumps({}),
+            f'/users/{user_id}/notifications/{user_notification_id}/read',
+            data=json.dumps({}),
         )
         assert rv.status_code == 200
         data = json.loads(rv.text)['data']
@@ -835,7 +844,8 @@ class UserManagementTestCase(BlackboxBaseTestCase):
         '''
         LOGGER.info('Test "mark notification as dismissed"')
         rv = self.rest_driver.Post(
-            f'/users/{user_id}/notifications/{user_notification_id}/dismiss', data=json.dumps({}),
+            f'/users/{user_id}/notifications/{user_notification_id}/dismiss',
+            data=json.dumps({}),
         )
         assert rv.status_code == 200
         data = json.loads(rv.text)['data']

@@ -30,5 +30,5 @@ setup(
     url='https://github.com/abakhru/asyncweb',
     version='0.1.0',
     zip_safe=False,
-    extras_require={'testing': Path('requirements_dev.txt').read_text().splitlines()}
+    extras_require={'testing': Path('requirements_dev.txt').read_text().splitlines()},
 )

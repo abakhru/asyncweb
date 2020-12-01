@@ -4,6 +4,7 @@ from src.db import users_db
 from src.db.base import session, users_table
 from src.utils.auth import get_password_hash
 from src.utils.logger import LOGGER
+
 # from src.utils.models import UserModel
 
 
@@ -30,8 +31,8 @@ if __name__ == "__main__":
         "email": "test.88888888888888@amit.com",
         "password": "password123",
         "first_name": "abc",
-        "last_name": "def"
-        }
+        "last_name": "def",
+    }
     result = users_db.post(payload)
 
     # result = UserModel(email="test.88888888888888@amit.com",

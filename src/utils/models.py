@@ -70,7 +70,6 @@ class UserPasswordReset(BaseModel):
 class User(UserBase):
     id: int
 
-
     class Config:
         orm_mode = True
 
@@ -92,7 +91,6 @@ class PostUpdate(PostBase):
 # return in response
 class Post(PostBase):
     id: int
-
 
     class Config:
         orm_mode = True
