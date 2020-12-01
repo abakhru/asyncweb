@@ -1,10 +1,6 @@
-from datetime import datetime
-
-from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, Index, Integer, String
-from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import DateTime
 
 """NoteSchema will be used for validating the payloads for creating and updating notes."""
 DATETIME_WITH_TIME_ZONE = DateTime(timezone=True)
@@ -37,28 +33,6 @@ class UserDB(BaseModel):
 class UserLoginSchema(BaseModel):
     email: str
     password: str
-
-
-class UserModel(UserMixin, db.Model):
-    __tablename__ = 'users'
-
-    id = Column("id", Integer, primary_key=True),
-    email = Column("email", String(128), nullable=False, unique=True),
-    password_hash = Column("password_hash", String(256), nullable=False, default=''),
-    first_name = Column("first_name", String(128), nullable=False),
-    last_name = Column("last_name", String(128), nullable=False),
-    created_at = Column("created_at", DATETIME_WITH_TIME_ZONE, default=datetime.now)
-
-    __table_args__ = (
-        Index("user_id_idx", "id"),
-        Index("user_name_idx", "name"),
-    )
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
 
 class Message(BaseModel):
@@ -96,6 +70,7 @@ class UserPasswordReset(BaseModel):
 class User(UserBase):
     id: int
 
+
     class Config:
         orm_mode = True
 
@@ -117,6 +92,7 @@ class PostUpdate(PostBase):
 # return in response
 class Post(PostBase):
     id: int
+
 
     class Config:
         orm_mode = True

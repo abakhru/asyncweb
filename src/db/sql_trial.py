@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from src.db import users_db
 from src.db.base import session, users_table
+from src.utils.auth import get_password_hash
 from src.utils.logger import LOGGER
-from src.utils.models import UserModel
+# from src.utils.models import UserModel
 
 
 def get_user(**kwargs):
@@ -24,13 +26,21 @@ if __name__ == "__main__":
     #                                      first_name="abc",
     #                                      last_name="def",
     #                                      password=get_password_hash(str('password123')))
-    result = UserModel(email="test.88888888888888@amit.com",
-                       first_name="abc",
-                       last_name="def",
-                       password='password123')
-    db.add(result)
-    db.commit()
-    db.refresh(result)
+    payload = {
+        "email": "test.88888888888888@amit.com",
+        "password": "password123",
+        "first_name": "abc",
+        "last_name": "def"
+        }
+    result = users_db.post(payload)
+
+    # result = UserModel(email="test.88888888888888@amit.com",
+    #                    first_name="abc",
+    #                    last_name="def",
+    #                    password='password123')
+    # db.add(result)
+    # db.commit()
+    # db.refresh(result)
     LOGGER.info(f'==== {result}')
     print(type(result))
     for i in result:

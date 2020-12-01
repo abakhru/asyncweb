@@ -99,9 +99,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-from src.db import crud
+from src.db import crud, users_db
 from src.utils import auth
 from src.utils.deps import get_current_user, get_db
+from src.utils.logger import LOGGER
 from src.utils.models import UserCreate, UserUpdate, UserVerify
 from src.utils.response_schemas import (
     all_users_responses,
@@ -113,14 +114,14 @@ router = APIRouter()
 
 
 @router.post("", responses=general_responses)
-def register_user(user: UserCreate, db: Session = Depends(get_db)) -> JSONResponse:
-    data = auth.get_user(db, email=user.email)
-    if data is not None and not data:
-        return JSONResponse(status_code=400, content={"message": "email already registered"})
-        # raise HTTPException(status_code=400,
-        #                     detail="email already registered")
-    data = crud.create_user(db=db, user=user)
-    if data is None:
+async def register_user(user: UserCreate, db: Session = Depends(get_db)) -> JSONResponse:
+    user_id = auth.get_user(db, email=user.email)
+    LOGGER.debug(f'[create_user] user id: {user_id}')
+    if user_id is not None:
+        return JSONResponse(status_code=400,
+                            content={"message": f"{user.email} already registered"})
+    user_id = await users_db.post(user)
+    if user_id is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200, content={"message": "success"})
 
