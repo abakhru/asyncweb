@@ -1,22 +1,34 @@
+import os
 from datetime import datetime
 
-from src.db import users_db
-from src.db.base import session, users_table
-from src.utils.auth import get_password_hash
-from src.utils.logger import LOGGER
+from sqlalchemy import MetaData, create_engine
+
+# from src.db import users_db
+# from src.db.base import session, users_table
+# from src.utils.auth import get_password_hash
+# from src.utils.logger import LOGGER
 
 # from src.utils.models import UserModel
+from sqlalchemy.orm import Session
 
+engine = create_engine(os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:////tmp/database.db'))
+session = Session(engine)
+metadata = MetaData()
+
+
+q = engine.execute(db.text('''SELECT email FROM users WHERE email=%(email)s''', email='Jack'))
+for row in q:
+    print(row)
 
 def get_user(**kwargs):
     for key, value in kwargs.items():
         return session.query(users_table).filter(eval(f'users_table.c.{key}') == f'{value}').first()
 
-
-if __name__ == "__main__":
-    email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
-    password = 'password123'
-    db = session
+#
+# if __name__ == "__main__":
+#     email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
+#     password = 'password123'
+    # db = session
     # records = get_user(email=email)
     # result = get_user(email=email)
     # for row in records:
@@ -33,7 +45,7 @@ if __name__ == "__main__":
         "first_name": "abc",
         "last_name": "def",
     }
-    result = users_db.post(payload)
+    # result = users_db.post(payload)
 
     # result = UserModel(email="test.88888888888888@amit.com",
     #                    first_name="abc",
@@ -42,11 +54,11 @@ if __name__ == "__main__":
     # db.add(result)
     # db.commit()
     # db.refresh(result)
-    LOGGER.info(f'==== {result}')
-    print(type(result))
-    for i in result:
-        if not isinstance(i, datetime):
-            print(i)
+    # LOGGER.info(f'==== {result}')
+    # print(type(result))
+    # for i in result:
+    #     if not isinstance(i, datetime):
+    #         print(i)
     # users2 = Author(name="users2")
     # session.add(users2)
     # session.commit()

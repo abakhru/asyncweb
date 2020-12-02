@@ -1,13 +1,15 @@
-import os
+import json
+import subprocess
 
 from fastapi import HTTPException
 from fastapi_login.exceptions import InvalidCredentialsException
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, redirect, render_template, request, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 # from src.db import users_db
 # from src.db.base import SESSION, database, users
 # from src.utils.auth import LOGIN_MANAGER
+# from src.db import users_db
 from src.utils.logger import LOGGER
 
 app = Flask(__name__)
@@ -15,11 +17,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/database.db'
 db = SQLAlchemy(app)
 
 
-class user(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80))
     email = db.Column(db.String(120))
     password = db.Column(db.String(80))
+
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 
 @app.route('/')
@@ -35,31 +40,43 @@ def login():
     if request.method == "POST":
         uname = request.form["username"]
         passw = request.form["password"]
-        login = user.query.filter_by(username=uname, password=passw).first()
-        if login is not None:
-            # return redirect(url_for("index"))
+        login = User.query.filter_by(username=uname, password=passw).first()
+        if login:
             return {'access_token': 'abc123', 'token_type': 'bearer'}
-    # return render_template("login.html")
-    raise InvalidCredentialsException
+        else:
+            raise InvalidCredentialsException
+    else:
+        return redirect(url_for("index"))
+        # return render_template("login.html")
 
 
-# @app.route("/create", methods=['POST'])
-# def create_user():
-#     payload = request.form
-#     user_id = users_db.get_user(email=payload.email)
-#     # if len(user_id):
-#     LOGGER.debug(f'[create_user] user id: {user_id}')
-#     if user_id:
-#         LOGGER.warning(f'{payload.email} already exists')
-#         raise HTTPException(status_code=422, detail=f"Duplicate user {payload.email}")
-#     user_id = users_db.post(payload)
-#     response_object = {
-#         "id": user_id,
-#         "email": payload.email,
-#         "first_name": payload.first_name,
-#         "last_name": payload.last_name,
-#         }
-#     return response_object
+def get_user(**kwargs):
+    for key, value in kwargs.items():
+        LOGGER.debug(f'Querying: {key}="{value}"')
+        # return User.query.filter_by(eval(f'{key}') = f'{value}').first()
+        return User.query.filter_by(email=value).first()
+
+
+@app.route("/create", methods=['POST'])
+def create_user():
+    LOGGER.debug(f'request.json:\n{json.dumps(request.json, indent=4)}')
+    payload = request.json
+    # user_id = User.query.filter_by(email=payload['email']).first()
+    user_id = get_user(email=payload['email'])
+    if user_id:
+        LOGGER.error(f'{payload["email"]} already exists')
+        raise HTTPException(status_code=422, detail=f"Duplicate user {payload['email']}")
+    new_user = User(username=payload["username"],
+                    email=payload["email"],
+                    password=payload['password'])
+    db.session.add(new_user)
+    db.session.commit()
+    user_id = User.query.filter_by(email=payload['email']).first()
+    LOGGER.debug(f'[create_user] user id: {user_id.metadata}')
+    response_object = {"id": user_id.get('id'),
+                       "email": payload["email"],
+                       "username": payload['username']}
+    return response_object
 
 
 # @app.route('/login', methods=['POST'])
@@ -121,5 +138,10 @@ def logout():
 
 if __name__ == "__main__":
     db.create_all()
-    app.secret_key = os.urandom(12)
-    app.run(debug=True, host='0.0.0.0', port=4000)
+    admin = User(username='admin', email='admin@example.com', password='admin')
+    db.session.add(admin)
+    db.session.commit()
+    # print(User.query.all())
+    LOGGER.info(f"{User.query.filter_by(username='admin').first()}")
+    app.secret_key = subprocess.check_output('openssl rand -hex 32', shell=True).decode().rstrip()
+    app.run(debug=True, host='0.0.0.0', port=8000)
