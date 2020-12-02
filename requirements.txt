@@ -24,3 +24,4 @@ jwt
 bcrypt
 passlib
 emails
+flask_sqlalchemy

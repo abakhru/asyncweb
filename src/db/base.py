@@ -12,7 +12,7 @@ from src.conf import config
 from src.utils.logger import LOGGER
 
 db_conf = config['database']
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", 'sqlite:////tmp/database.db')
 
 if not DATABASE_URL:
     # postgresql://amit:amit@db/asyncweb
@@ -49,17 +49,17 @@ users_table = Table(
     "users",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("created_at", DateTime, default=func.now()),
-    Column("last_modified", DateTime, default=func.now()),
-    Column("deleted_at", DateTime, default=func.now()),
     Column("email", String(128), nullable=False, unique=True),
     Column("password_hash", String(256), nullable=False, default=''),
-    Column("consecutive_failures", Integer, nullable=True, default=0),
-    Column("lockout_ends", DateTime, default=func.now()),
     Column("first_name", String(128), nullable=False),
     Column("last_name", String(128), nullable=False),
+    Column("created_at", DateTime, default=func.now()),
+    Column("last_modified", DateTime, default=func.now()),
+    Column("deleted_at", DateTime),
     Column("consecutive_resets", Integer, nullable=True, default=0),
-    Column("reset_lockout_ends", DateTime, default=func.now()),
+    Column("consecutive_failures", Integer, nullable=True, default=0),
+    Column("lockout_ends", DateTime),
+    Column("reset_lockout_ends", DateTime),
 )
 
 # databases query builder

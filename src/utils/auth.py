@@ -69,8 +69,8 @@ def get_password_hash(password: str):
 
 
 def verify_password(plain_password: str, hashed_password: str):
-    # return checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
+    # return pwd_context.verify(plain_password, hashed_password)
     LOGGER.info(f'plain: {plain_password}')
     LOGGER.info(f'hashed: {hashed_password}')
-    # return pwd_context.verify(plain_password, hashed_password)
-    return plain_password == hashed_password
+    LOGGER.info(f'hashed-plain: {hash_password(plain_password)}')
+    return hash_password(plain_password) == hashed_password
