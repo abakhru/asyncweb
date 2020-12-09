@@ -25,3 +25,4 @@ bcrypt
 passlib
 emails
 flask_sqlalchemy
+python-jose[cryptography]

@@ -20,14 +20,15 @@ q = engine.execute(db.text('''SELECT email FROM users WHERE email=%(email)s''', 
 for row in q:
     print(row)
 
+
 def get_user(**kwargs):
     for key, value in kwargs.items():
         return session.query(users_table).filter(eval(f'users_table.c.{key}') == f'{value}').first()
 
-#
-# if __name__ == "__main__":
-#     email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
-#     password = 'password123'
+    #
+    # if __name__ == "__main__":
+    #     email = 'test.8cee78f6-7776-4de2-a3a1-0b15f331290b@amit.com'
+    #     password = 'password123'
     # db = session
     # records = get_user(email=email)
     # result = get_user(email=email)
