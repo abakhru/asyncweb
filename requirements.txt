@@ -20,9 +20,11 @@ flask
 rich
 fastapi-login
 flask_login
-jwt
 bcrypt
 passlib
 emails
 flask_sqlalchemy
 python-jose[cryptography]
+fastapi-login
+pyjwt
+aiosqlite

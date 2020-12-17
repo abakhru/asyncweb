@@ -4,11 +4,9 @@ from bcrypt import checkpw, gensalt, hashpw
 from fastapi_login.exceptions import InvalidCredentialsException
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import LoginManager, current_user, logout_user
-from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import DateTime, create_engine, func
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-from sqlalchemy.orm import scoped_session, sessionmaker, validates
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from src.conf import config
 from src.utils.logger import LOGGER
@@ -133,21 +131,25 @@ def db_available():
 
 def login_required(f):
     """ REST friendly decorator for enforcing authentication """
+
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             return errors.LoginRequired()
         else:
             return f(*args, **kwargs)
+
     return wrapper
 
 
 def user_is_active(f):
     """Decorator to deflect request from deactivated users"""
+
     def wrapper(*args, **kwargs):
         if current_user.is_active:
             return f(*args, **kwargs)
         else:
             return errors.AccountNotActive()
+
     return wrapper
 
 

@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from jwt.exceptions import JWTException
-from jwt.utils import get_int_from_datetime
+# from jwt.exceptions import JWTException
+# from jwt.utils import get_int_from_datetime
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -117,7 +117,7 @@ def reset_password(reset_data: UserPasswordReset, db: Session = Depends(get_db))
         token_email: str = payload.get("sub")
         if token_email is None:
             raise credentials_exception
-    except JWTException as e:
+    except Exception as e:
         print(e)
         raise credentials_exception
     db_user = crud.verify_user(db, email=token_email)

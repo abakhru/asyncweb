@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -10,7 +12,7 @@ from fastapi.security import (
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
-from sqlalchemy import Boolean, Column, Integer, String, create_engine, ForeignKey
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -70,7 +72,6 @@ class Item(Base):
     title = Column(String, index=True)
     description = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
-
     owner = relationship("User", back_populates="items")
 
 
