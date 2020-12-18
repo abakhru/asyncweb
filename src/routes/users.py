@@ -99,8 +99,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-from src.db import crud, users_db
-from src.utils import auth
+from src.db import users_db, user_crud
+from src.db.user_crud import get_user
 from src.utils.deps import get_current_user, get_db
 from src.utils.logger import LOGGER
 from src.utils.models import UserCreate, UserUpdate, UserVerify
@@ -113,15 +113,14 @@ from src.utils.response_schemas import (
 router = APIRouter()
 
 
-@router.post("", responses=general_responses)
+@router.post("/create", responses=general_responses)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)) -> JSONResponse:
-    user_id = auth.get_user(db, email=user.email)
-    LOGGER.debug(f'[create_user] user id: {user_id}')
+    user_id = get_user(db, email=user.email)
+    LOGGER.debug(f'[create] locals: {locals()}')
     if user_id is not None:
-        return JSONResponse(
-            status_code=400, content={"message": f"{user.email} already registered"}
-        )
-    user_id = await users_db.post(user)
+        return JSONResponse(status_code=400,
+                            content={"message": f"{user.email} already registered"})
+    user_id = await users_db.post(payload=user)
     if user_id is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200, content={"message": "success"})
@@ -134,7 +133,7 @@ def update_user(
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
 ) -> JSONResponse:
-    data = crud.update_user(db, user_id=user_id, user=user)
+    data = user_crud.update_user(db, user_id=user_id, user=user)
     if data is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200, content={"message": "success"})
@@ -146,7 +145,7 @@ def delete_user(
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
 ) -> JSONResponse:
-    data = crud.delete_user(db, user_id=user_id)
+    data = user_crud.delete_user(db, user_id=user_id)
     if data is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200, content={"message": "success"})
@@ -158,7 +157,7 @@ def single_user(
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
 ) -> JSONResponse:
-    db_user = crud.get_user_id(db, id=user_id)
+    db_user = user_crud.get_user_id(db, id=user_id)
     if db_user is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     json_compatible_item_data = jsonable_encoder(db_user)
@@ -170,7 +169,7 @@ def all_user(
     db: Session = Depends(get_db),
     current_user: UserVerify = Depends(get_current_user),
 ) -> JSONResponse:
-    db_user = crud.get_all_user(db)
+    db_user = user_crud.get_all_user(db)
     if db_user is None:
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
     json_compatible_item_data = jsonable_encoder(db_user)

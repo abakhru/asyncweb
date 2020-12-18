@@ -7,10 +7,9 @@ from uvicorn import Config
 from pathlib import Path
 
 from src.conf import config
-from src.db.base import database, engine, metadata
+from src.db import database
 from src.routes import api_router
 
-metadata.create_all(engine)
 
 app = FastAPI(
         title=config['project']['project_name'],

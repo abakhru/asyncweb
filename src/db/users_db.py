@@ -1,5 +1,5 @@
-from src.db.base import database, users_table
-from src.db.crud import get_password_hash
+from src.db import database, users_table
+from src.db.user_crud import get_password_hash
 from src.utils.models import UserSchema
 
 

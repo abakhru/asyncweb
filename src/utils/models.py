@@ -1,10 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel
 from sqlalchemy import DateTime
 
 """NoteSchema will be used for validating the payloads for creating and updating notes."""
 DATETIME_WITH_TIME_ZONE = DateTime(timezone=True)
-db = SQLAlchemy()
 
 
 class NoteSchema(BaseModel):
@@ -70,6 +68,7 @@ class UserPasswordReset(BaseModel):
 class User(UserBase):
     id: int
 
+
     class Config:
         orm_mode = True
 
@@ -91,6 +90,7 @@ class PostUpdate(PostBase):
 # return in response
 class Post(PostBase):
     id: int
+
 
     class Config:
         orm_mode = True

@@ -1,4 +1,4 @@
-from src.db.base import database, notes_table
+from src.db import database, notes_table
 from src.utils.models import NoteSchema
 
 

@@ -2,6 +2,9 @@ version: '3.7'
 
 services:
 
+# nginx:
+#
+#
 #  netdata:
 #    image: netdata/netdata
 #    ports:

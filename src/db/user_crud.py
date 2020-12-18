@@ -3,13 +3,19 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, defer
 
-from src.db.base import pwd_context, session, users_table
+from src.db import pwd_context, session, users_table
 from src.utils.logger import LOGGER
 from src.utils.models import UserCreate, UserUpdate
 
 
 def get_password_hash(password: str):
     return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str,
+                    hashed_password: str):
+    LOGGER.debug(f'plain: {plain_password}; hashed: {hashed_password}')
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def __get_user_item__(**kwargs):
@@ -72,10 +78,10 @@ def delete_user(db: Session, user_id: int) -> Any:
         return None
 
 
-def verify_user(db: Session, email: str) -> Any:
+def get_user(db: Session, email: str) -> Any:
     try:
         data = (
-            db.query(users_table.c.id, users_table.c.email)
+            db.query(users_table.c.id, users_table.c.email, users_table.c.password_hash)
             .filter(users_table.c.email == email)
             .first()
         )

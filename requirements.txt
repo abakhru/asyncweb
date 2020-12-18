@@ -3,7 +3,7 @@ colorlog
 httpie
 pandas
 parse
-psycopg2
+psycopg2-binary
 pyquery
 python_dateutil
 requests
