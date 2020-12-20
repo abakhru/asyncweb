@@ -1,5 +1,5 @@
 .dockerignore
-Dockerfile
+src/Dockerfile
 db.sqlite3
 __pycache__
 *.pyc

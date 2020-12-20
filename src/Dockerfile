@@ -35,7 +35,7 @@ RUN set -eux && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 USER ${USER}
-COPY --chown=amit:amit . ${WORKDIR}/
+COPY --chown=amit:amit .. ${WORKDIR}/
 RUN echo "alias l='ls -larth'" >> /home/${USER}/.bashrc && \
     bin/quick_start.sh
 

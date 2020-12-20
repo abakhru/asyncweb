@@ -2,9 +2,18 @@ version: '3.7'
 
 services:
 
-# nginx:
-#
-#
+  nginx:
+    image: nginx:1.19
+    container_name: asyncweb-lb
+    volumes:
+      - ${PWD}/src/conf/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+    ports:
+      - 8000:80
+    networks:
+      - aysncweb-net
+
 #  netdata:
 #    image: netdata/netdata
 #    ports:
@@ -26,7 +35,7 @@ services:
 #    depends_on:
 #      - web
 #    networks:
-#      - aysncweb
+#      - aysncweb-net
 #
   web:
 #    build: .
@@ -34,23 +43,30 @@ services:
     ports:
       - 8000:8000
     env_file:
-      - .env
+      - ".env"
     volumes:
       - ${PWD}:/app
     networks:
-      - aysncweb
+      - aysncweb-net
     depends_on:
       - db
     command: '/app/bin/run.sh'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
+      interval: 60s
+      timeout: 60s
+      retries: 3
+      start_period: 240s
 
   db:
     image: postgres:12.3-alpine
+    container_name: asyncweb-db
     volumes:
       - db-data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - ".env"
     networks:
-      - aysncweb
+      - aysncweb-net
     ports:
       - 5432:5432
 
@@ -58,4 +74,4 @@ volumes:
   db-data:
 
 networks:
-  aysncweb:
+  aysncweb-net:
